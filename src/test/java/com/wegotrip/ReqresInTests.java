@@ -1,19 +1,27 @@
 package com.wegotrip;
 
+import com.codeborne.selenide.Configuration;
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class ReqresInTests {
+    @BeforeAll
+    static void setUp() {
+        //Configuration.baseUrl = "https://reqres.in";
+        RestAssured.baseURI = "https://reqres.in";
+
+    }
     @Test
     void listUsersTest() {
         given()
                 .log().uri()
                 .when()
-                .get("https://reqres.in/api/users?page=2")
+                .get("/api/users?page=2")
                 .then()
                 .log().status()
                 .log().body()
@@ -31,7 +39,7 @@ public class ReqresInTests {
                 .contentType(JSON)
                 .body(data)
                 .when()
-                .get("https://reqres.in/api/users/2")
+                .get("/api/users/2")
                 .then()
                 .log().status()
                 .log().body()
@@ -49,7 +57,7 @@ public class ReqresInTests {
                 .contentType(JSON)
                 .body(data)
                 .when()
-                .post("https://reqres.in/api/users")
+                .post("/api/users")
                 .then()
                 .log().status()
                 .log().body()
@@ -66,13 +74,13 @@ public class ReqresInTests {
                 .contentType(JSON)
                 .body(data)
                 .when()
-                .post("https://reqres.in/api/register")
+                .post("/api/register")
                 .then()
                 .log().status()
                 .log().body()
                 .statusCode(200)
                 .body("id", is(4))
-                .body("token", is("QpwL5tke4Pnpja7X4"));
+                .body("token", notNullValue());
     }
 
     @Test
@@ -82,7 +90,7 @@ public class ReqresInTests {
                 .log().uri()
                 .body("123")
                 .when()
-                .put("https://reqres.in/api/users/2")
+                .put("/api/users/2")
                 .then()
                 .log().status()
                 .log().body()
